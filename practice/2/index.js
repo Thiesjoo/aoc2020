@@ -9,12 +9,10 @@ fs.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
         let program = data.split(",").map(Number);
         program[1] = i;
         program[2] = j;
-        // let program = [1, 1, 1, 4, 99, 5, 6, 0, 99];
         let curr = 0;
 
         while (curr < program.length && program[curr] !== 99) {
           let opCode = program[curr];
-          // console.log(opCode);
           switch (opCode) {
             case 1:
               program[program[curr + 3]] =
@@ -30,7 +28,6 @@ fs.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
         if (program[0] === 19690720) {
           console.log(i, j);
         }
-        // console.log(program);
       }
     }
   } else {
