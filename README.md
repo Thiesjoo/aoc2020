@@ -4,8 +4,10 @@
 
 ## Usage
 
+Paste inputdata in `input.txt` in the correct folder
+
 Run with command:
-`DAY=1 PART=1 SESSION=<Session from AoC website> npm run start`
+`cat <day>/input.txt | ./advent run <day> <part> -`
 
 The plus sign means getting input from website
 
