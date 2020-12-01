@@ -2,6 +2,7 @@
 
 // Part 1
 // ======
+// 0 ms - answer: -
 
 const part1 = input => {
   const start = new Date()
@@ -14,6 +15,8 @@ const part1 = input => {
 
 // Part 2
 // ======
+// 0 ms - answer: -
+
 
 const part2 = input => {
   const start = new Date()

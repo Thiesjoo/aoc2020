@@ -20,7 +20,7 @@
   "adventConfig": {
     "year": "2020",
     "nameTemplate": "{{num}}/index.js",
-    "templateFile": "node_modules/advent-of-code/src/templates/day.js"
+    "templateFile": "template/day.js"
   },
   "dependencies": {
     "advent-of-code": "^5.0.0"
