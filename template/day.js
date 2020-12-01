@@ -8,8 +8,7 @@ const part1 = input => {
   const start = new Date()
   const data = input.split("\n").map(Number);
 
-  const end = new Date() - start;
-  console.log('Execution time: %dms', end);
+  console.log('Execution time: %dms', new Date() - start);
   return input
 }
 
@@ -22,8 +21,7 @@ const part2 = input => {
   const start = new Date()
   const data = input.split("\n").map(Number);
 
-  const end = new Date() - start;
-  console.log('Execution time: %dms', end);
+  console.log('Execution time: %dms', new Date() - start);
   return input
 }
 
