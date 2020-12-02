@@ -1,8 +1,6 @@
 'use strict'
 const now = require("performance-now")
 
-
-
 // Part 1
 // ======
 // ~0 ms - answer: 0

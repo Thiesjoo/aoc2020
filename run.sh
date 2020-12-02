@@ -1,4 +1,4 @@
-DAY=${DAY:-02}
-PART=${PART:-02}
+DAY=${DAY:-03}
+PART=${PART:-01}
 
 cat $DAY/input.txt | ./advent run  $DAY $PART -   
