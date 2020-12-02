@@ -4,16 +4,16 @@
 
 ## Usage
 
-Paste inputdata in `input.txt` in the correct folder
+Paste input data in `input.txt` in the correct folder
 
 Run with command:
-`cat <day>/input.txt | ./advent run <day> <part> -`
+`DAY=01 PART=01 ./run.sh`
+Where you can vary the `DAY` and `PART` variables
 
-The plus sign means getting input from website
 
-Create new folder with
+Create a new day with
 `./advent init <day>`
 
-## Imporant features/notes
+## Important features/notes
 
--
+- in the `template` folder you can find a standard template, with input parsing and timing

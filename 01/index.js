@@ -1,18 +1,19 @@
 "use strict";
+const now = require("performance-now")
 
 // Part 1
 // ======
 // 2 ms - answer: 703131
 
 const part1 = (input) => {
-  const start = new Date()
+  const start = now()
   const data = input.split("\n").map(Number);
   for (let i = 0; i < data.length; i++) {
     const element = data[i];
     for (let j = 0; j < data.length; j++) {
       const element1 = data[j];
       if (element1 + element === 2020) {
-        console.log('Execution time: %dms', new Date() - start);
+        console.log('Execution time: %dms', (now() - start).toFixed(3));
         return element * element1;
       }
     }

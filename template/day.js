@@ -1,37 +1,39 @@
 'use strict'
-const NanoTimer = require('nanotimer');
-const timerObject = new NanoTimer();
+const now = require("performance-now")
+
 
 
 // Part 1
 // ======
-// ~0 us - answer: 548
+// ~0 ms - answer: 0
 
 const part1 = input => {
+  const start = now()
   let result = 0;
-  const end = timerObject.time(() => {
-    const data = input.split("\n");
 
-  }, '', 'u');
-  console.log('Execution time: %dus', end);
+  const data = input.split("\n");
+
+  const end = now()
+  console.log('Execution time: ~%dms', (end - start).toFixed(3));
 
   return result
 }
 
 // Part 2
 // ======
-// ~0 us - answer: 0
+// ~0 ms - answer: 0
 
 const part2 = input => {
-
+  const start = now()
   let result = 0;
-  const end = timerObject.time(() => {
-    const data = input.split("\n")
 
-  }, '', 'u');
-  console.log('Execution time: %dus', end);
+  const data = input.split("\n");
+
+  const end = now()
+  console.log('Execution time: ~%dms', (end - start).toFixed(3));
 
   return result
 }
+
 
 module.exports = { part1, part2 }
