@@ -3,7 +3,7 @@ const now = require("performance-now")
 
 // Part 1
 // ======
-// 2 ms - answer: 703131
+// 1.3 ms - answer: 703131
 
 const part1 = (input) => {
   const start = now()
@@ -22,17 +22,17 @@ const part1 = (input) => {
 
 // Part 2
 // ======
-// 6 ms - answer: 272423970
+// 6.8 ms - answer: 272423970
 
 const part2 = (input) => {
-  const start = new Date()
+  const start = now()
   const data = input.split("\n").map(Number);
 
   for (let i = 0; i < data.length; i++) {
     for (let j = 0; j < data.length; j++) {
       for (let k = 0; k < data.length; k++) {
         if (data[i] + data[j] + data[k] === 2020) {
-          console.log('Execution time: %dms', new Date() - start);
+          console.log('Execution time: %dms', (now() - start).toFixed(3));
           return data[i] * data[j] * data[k]
         }
       }

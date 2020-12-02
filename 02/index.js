@@ -36,7 +36,7 @@ const part1 = input => {
 
 const part2 = input => {
   const start = now()
-  let count2 = 0;
+  let totalCount = 0;
 
   const data = input.split("\n")
   for (let i = 0; i < data.length; i++) {
@@ -49,14 +49,14 @@ const part2 = input => {
     const a = string[req[0] - 1] === letter
     const b = string[req[1] - 1] === letter
 
-    if ((a && !b) || (!a && b)) {
-      count2 += 1
+    if ((a && !b) || (!a && b)) { //XOR
+      totalCount += 1
     }
   }
   const end = now()
   console.log('Execution time: %dms', (end - start).toFixed(3));
 
-  return count2
+  return totalCount
 }
 
 module.exports = { part1, part2 }

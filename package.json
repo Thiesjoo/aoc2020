@@ -24,6 +24,6 @@
 	},
 	"dependencies": {
 		"advent-of-code": "^5.0.0",
-		"nanotimer": "^0.3.15"
+		"performance-now": "^2.1.0"
 	}
 }
