@@ -23,6 +23,7 @@
 		"templateFile": "template/day.js"
 	},
 	"dependencies": {
-		"advent-of-code": "^5.0.0"
+		"advent-of-code": "^5.0.0",
+		"nanotimer": "^0.3.15"
 	}
 }

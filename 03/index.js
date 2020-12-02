@@ -13,7 +13,7 @@ const part1 = input => {
     const data = input.split("\n");
 
   }, '', 'u');
-  console.log('Execution time: %dus', end);
+  console.log('Execution time: %dus', end.toPrecision(1));
 
   return result
 }
