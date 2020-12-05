@@ -4,11 +4,11 @@ const now = require("performance-now")
 // Part 1
 // ======
 // ~1.1 ms - answer: 951
+
 const part1 = input => {
 	const start = now()
 
 	const data = input.split("\n");
-
 	const allSeats = getAllSeats(data)
 	allSeats.sort((a, b) => b - a)
 
@@ -30,7 +30,7 @@ function getAllSeats(data) {
 
 // Part 2
 // ======
-// ~1.8 ms - answer: 653
+// ~1.4 ms - answer: 653
 
 const part2 = input => {
 	const start = now()
@@ -45,13 +45,7 @@ const part2 = input => {
 		if (!allSeats.includes(i + 1)) {
 			missing.push(i + 1)
 		}
-
-		if (!allSeats.includes(i - 1)) {
-			missing.push(i - 1)
-		}
 	}
-
-	// missing.sort((a, b) => b - a)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
