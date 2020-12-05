@@ -3,28 +3,24 @@ const now = require("performance-now")
 
 // Part 1
 // ======
-// ~1.1 ms - answer: 951
+// ~0.8 ms - answer: 951
 
 const part1 = input => {
 	const start = now()
 
 	const data = input.split("\n");
 	const allSeats = getAllSeats(data)
-	allSeats.sort((a, b) => b - a)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
 
-	return allSeats[0]
+	return Math.max(...allSeats)
 }
 
 function getAllSeats(data) {
 	return data.map(dataInp => {
 		//Just parse the values into binary to get the correct value
-		let maxY = parseInt(dataInp.substr(0, 7).replace(/F/g, "0").replace(/B/g, "1"), 2)
-		let maxX = parseInt(dataInp.substring(7).replace(/L/g, "0").replace(/R/g, "1"), 2)
-
-		return maxY * 8 + maxX
+		return parseInt(dataInp.replace(/[FL]/g, "0").replace(/[BR]/g, "1"), 2)
 	})
 }
 
