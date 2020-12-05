@@ -3,14 +3,12 @@ const now = require("performance-now")
 
 // Part 1
 // ======
-// ~2.2 ms - answer: 951
-const maxHeight = 128 - 1
-const maxWidth = 8 - 1
-
+// ~1.1 ms - answer: 951
 const part1 = input => {
 	const start = now()
 
 	const data = input.split("\n");
+
 	const allSeats = getAllSeats(data)
 	allSeats.sort((a, b) => b - a)
 
@@ -20,34 +18,19 @@ const part1 = input => {
 	return allSeats[0]
 }
 
-function getMid(string, max) {
-	let currY = [0, max];
-
-	for (let i = 0; i < string.length; i++) {
-		let mid = Math.floor((currY[0] + currY[1]) / 2);
-		if (string[i] === "F" || string[i] === "L") {
-			currY[1] = mid - 1;
-		} else {
-			currY[0] = mid + 1;
-		}
-	}
-	return currY[0]
-}
-
 function getAllSeats(data) {
-
 	return data.map(dataInp => {
-		let maxY = getMid(dataInp.substr(0, 7), maxHeight)
-		let maxX = getMid(dataInp.substring(7), maxWidth)
+		//Just parse the values into binary to get the correct value
+		let maxY = parseInt(dataInp.substr(0, 7).replace(/F/g, "0").replace(/B/g, "1"), 2)
+		let maxX = parseInt(dataInp.substring(7).replace(/L/g, "0").replace(/R/g, "1"), 2)
 
 		return maxY * 8 + maxX
 	})
-
 }
 
 // Part 2
 // ======
-// ~2.9 ms - answer: 653
+// ~1.8 ms - answer: 653
 
 const part2 = input => {
 	const start = now()
@@ -68,12 +51,12 @@ const part2 = input => {
 		}
 	}
 
-	missing.sort((a, b) => b - a)
+	// missing.sort((a, b) => b - a)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
 
-	return missing[0]
+	return missing[missing.length - 1]
 }
 
 
