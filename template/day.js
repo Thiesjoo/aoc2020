@@ -6,15 +6,15 @@ const now = require("performance-now")
 // ~0 ms - answer: 0
 
 const part1 = input => {
-  const start = now()
-  let result = 0;
+	const start = now()
+	let result = 0;
 
-  const data = input.split("\n");
+	const data = input.split("\n");
 
-  const end = now()
-  console.log('Execution time: ~%dms', (end - start).toFixed(3));
+	const end = now()
+	console.log('Execution time: ~%dms', (end - start).toFixed(3));
 
-  return result
+	return result
 }
 
 // Part 2
@@ -22,15 +22,15 @@ const part1 = input => {
 // ~0 ms - answer: 0
 
 const part2 = input => {
-  const start = now()
-  let result = 0;
+	const start = now()
+	let result = 0;
 
-  const data = input.split("\n");
+	const data = input.split("\n");
 
-  const end = now()
-  console.log('Execution time: ~%dms', (end - start).toFixed(3));
+	const end = now()
+	console.log('Execution time: ~%dms', (end - start).toFixed(3));
 
-  return result
+	return result
 }
 
 

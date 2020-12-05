@@ -94,7 +94,6 @@ const part2 = input => {
         } else if (requirement === "hcl" && (current[requirement].length !== 7 || current[requirement][0] !== "#" || !current[requirement].match(reggie))) { //Check the hex color using a regex`, but first check length and first char
           valid = false
           return
-
         } else if (requirement === "pid" && (current[requirement].length !== 9 || parseInt(current[requirement].length) == NaN)) {
           valid = false;
           return
@@ -106,7 +105,6 @@ const part2 = input => {
           return
         }
       }
-
     })
     return valid
   })
