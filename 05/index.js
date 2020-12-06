@@ -9,7 +9,7 @@ const part1 = input => {
 	const start = now()
 
 	const data = input.split("\n");
-	const allSeats = getAllSeats(data)
+	const allSeats = getAllSeatIds(data)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
@@ -17,7 +17,7 @@ const part1 = input => {
 	return Math.max(...allSeats)
 }
 
-function getAllSeats(data) {
+function getAllSeatIds(data) {
 	return data.map(dataInp => {
 		//Just parse the values into binary to get the correct value
 		return parseInt(dataInp.replace(/[FL]/g, "0").replace(/[BR]/g, "1"), 2)
@@ -32,7 +32,7 @@ const part2 = input => {
 	const start = now()
 
 	const data = input.split("\n");
-	const allSeats = getAllSeats(data)
+	const allSeats = getAllSeatIds(data)
 
 	const maxLen = Math.max(...allSeats)
 	let missing = []
