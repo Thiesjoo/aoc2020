@@ -9,13 +9,10 @@ const part1 = input => {
 	const start = now()
 
 	const data = input.split("\n\n").map(x => {
-		return x.replace(/\n/g, "").split("")
+		return [...new Set(x.replace(/\n/g, "").split(""))]
 	})
 
-	const parsed = data.map(x => {
-		return [...new Set(x)]; //Unique answers only
-	})
-	const result = parsed.reduce((acc, val) => acc + val.length, 0)
+	const result = data.reduce((acc, val) => acc + val.length, 0)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
@@ -31,33 +28,27 @@ const part2 = input => {
 	const start = now()
 
 	const data = input.split("\n\n").map(x => {
-		return x.split("\n")
-	})
+		let group = x.split("\n")
+		//A group is an array of persons. Each person has their answers as one long string
 
-	//Data is now an array of groups. Within each group there is an array with every person's answer
-	let parsed = data.map(group => {
-		let questionAnswered = {}
+		let questionAnswered = new Array(26).fill(0)
 		//Count the amount of times an answer has been given in a group 
 		group.forEach(person => {
 			const answers = person.split("")
 			answers.forEach(answer => {
-				if (!(answer in questionAnswered)) {
-					questionAnswered[answer] = 0
-				}
-				questionAnswered[answer]++
+				questionAnswered[answer.charCodeAt(0) - 97] += 1
 			})
 		})
 
 		//Check if the answer was given exactly the amount of the groups length
-		let count = 0;
-		Object.values(questionAnswered).forEach((x) => {
-			if (x === group.length) count++
-		})
-
-		return count;
+		return questionAnswered.reduce((acc, value) => {
+			acc += +(value === group.length)
+			//	   ^(unary operator) Turn value into a boolean, and convert that boolean to a 1 or a 0
+			return acc
+		}, 0);
 	})
 
-	const result = parsed.reduce((acc, val) => acc + val, 0)
+	const result = data.reduce((acc, val) => acc + val, 0)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
