@@ -23,8 +23,6 @@ const part1 = input => {
 		graph[parsed[1]] = otherParsed
 	})
 
-
-
 	result = Object
 		.keys(graph)
 		.filter((color) => fillGraph(color, graph).includes('shiny gold'))
@@ -50,7 +48,7 @@ function fillGraph(bagColor, graph) {
 
 let testGraph
 
-function getTotal(bagColor,) {
+function getTotal(bagColor) {
 	let total = 0;
 	for (const { color, amount } of testGraph[bagColor]) { //Loop over every color and gather total
 		total += amount + amount * getTotal(color);
