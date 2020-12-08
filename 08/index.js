@@ -8,7 +8,7 @@ const now = require("performance-now")
 const part1 = input => {
 	const start = now()
 
-	const acc = runProgram(input.split("\n")).acc
+	const acc = runProgram(parseInput(input)).acc
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
@@ -23,18 +23,17 @@ function runProgram(data) {
 	let curr = 0;
 
 	while (curr < maxLength && !executed[curr]) {
-		const [instruct, raw] = data[curr].split(" ")
 		executed[curr] = true
 
-		switch (instruct) {
+		switch (data[curr].instruct) {
 			case "nop":
 				curr++
 				break;
 			case "jmp":
-				curr += parseInt(raw)
+				curr += data[curr].value
 				break;
 			case "acc":
-				acc += parseInt(raw)
+				acc += data[curr].value
 				curr++
 				break;
 		}
@@ -43,26 +42,33 @@ function runProgram(data) {
 	return { acc, valid: !executed[curr] }
 }
 
+function parseInput(input) {
+	return input.split("\n").map(x => {
+		const [parsed, val] = x.split(" ")
+		return { instruct: parsed, value: parseInt(val) }
+	})
+}
+
 // Part 2
 // ======
-// ~17 ms - answer: 1023
+// ~6 ms - answer: 1023
 
 const part2 = input => {
 	const start = now()
 
-	const data = input.split("\n");
+	let data = parseInput(input)
+
 	data.find((instruction, i) => {
-		const nop = instruction.startsWith("nop");
-		const jmp = instruction.startsWith("jmp")
+		const { instruct, value } = instruction
+		const jmp = instruct === "jmp"
 
-		if (nop || jmp) {
-			const val = instruction.slice(3);
+		if (jmp || instruct === "nop") {
+			data[i] = { instruct: (jmp ? "nop" : "jmp"), value }
 
-			data[i] = (jmp ? "nop" : "jmp") + val
 			const result = runProgram(data);
 			if (result.valid) console.log(result.acc)
 
-			data[i] = (jmp ? "jmp" : "nop") + val
+			data[i] = instruction
 			return result.valid
 		}
 	})
