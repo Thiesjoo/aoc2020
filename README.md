@@ -10,10 +10,9 @@ Run with command:
 `DAY=01 PART=01 ./run.sh`
 Where you can vary the `DAY` and `PART` variables
 
-
 Create a new day with
 `./advent init <day>`
 
 ## Important features/notes
 
-- in the `template` folder you can find a standard template, with input parsing and timing
+In the `template` folder you can find a standard template, with input parsing and timing

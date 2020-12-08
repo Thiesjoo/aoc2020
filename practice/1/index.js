@@ -8,6 +8,7 @@ fs.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
     data.split("\n").forEach((x) => {
       console.log(x);
 
+
       let tempFuel = Math.floor(parseInt(x) / 3) - 2;
       while (tempFuel > 0) {
         sum += tempFuel;
