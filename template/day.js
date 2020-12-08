@@ -33,5 +33,4 @@ const part2 = input => {
 	return result
 }
 
-
 module.exports = { part1, part2 }
