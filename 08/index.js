@@ -46,29 +46,27 @@ function runProgram(data) {
 
 // Part 2
 // ======
-// ~54 ms - answer: 1023
+// ~31 ms - answer: 1023
 
 const part2 = input => {
 	const start = now()
 
 	const data = input.split("\n");
-
-	let validPrograms = data.map((instruction, i) => {
+	data.find((instruction, i) => {
 		let dataCopy = [...data]
 		if (instruction.startsWith("nop")) {
 			dataCopy[i] = "jmp" + instruction.slice(3)
 		} else if (instruction.startsWith("jmp")) {
 			dataCopy[i] = "nop" + instruction.slice(3)
 		}
+		let result = runProgram(dataCopy);
+		if (result.valid) console.log(result.acc)
 
-		return runProgram(dataCopy)
-	}).filter(x => x.valid)
-
+		return result.valid
+	})
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
-
-	return validPrograms[0].acc
 }
 
 
