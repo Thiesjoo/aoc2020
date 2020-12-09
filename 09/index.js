@@ -4,7 +4,7 @@ const now = require("performance-now")
 const preambleLength = 25
 // Part 1
 // ======
-// ~2.7 ms - answer: 15690279
+// ~0.3 ms - answer: 15690279
 
 const part1 = input => {
 	const start = now()
@@ -14,7 +14,7 @@ const part1 = input => {
 		const sum = data[i];
 		const preamble = data.slice(i - preambleLength, i)
 
-		if (!preamble.some((x) => preamble.some((y) => x + y === sum))) {
+		if (!preamble.some((x) => preamble.indexOf(sum - x) > -1)) {
 			const end = now()
 			console.log('Execution time: ~%dms', (end - start).toFixed(3));
 
@@ -26,7 +26,7 @@ const part1 = input => {
 
 // Part 2
 // ======
-// ~5.5 ms - answer: 2174232
+// ~3.5 ms - answer: 2174232
 
 let maxLength = 2000
 
