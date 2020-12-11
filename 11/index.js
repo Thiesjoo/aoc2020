@@ -4,34 +4,12 @@ const directions = [[0, 1], [1, 0], [-1, 0], [0, -1], [1, 1], [-1, -1], [-1, 1],
 
 // Part 1
 // ======
-// ~372 ms - answer: 2427
+// ~170 ms - answer: 2427
 
 const part1 = input => {
 	const start = now()
-	let result = 0;
 
-	let data = input.split("\n").map(x => x.split(""));
-
-	let changed = true;
-	while (changed) {
-		changed = false
-		const prev = data.map(x => [...x])
-
-		for (let i = 0; i < prev.length; i++) {
-			for (let j = 0; j < prev[i].length; j++) {
-				let neigh = getNeigh(i, j, prev);
-				if (prev[i][j] === "L" && !neigh.find(x => x === "#")) {
-					data[i][j] = "#"
-					changed = true
-				} else if (prev[i][j] === "#" && neigh.filter(x => x === "#").length > 3) {
-					data[i][j] = "L"
-					changed = true
-				}
-			}
-		}
-	}
-
-	result = countHash(data)
+	let result = simulate(input.split("\n").map(x => x.split("")), false)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
@@ -69,22 +47,12 @@ function getFarNeigh(i, j, data) {
 }
 
 function get(i, j, data) {
-	if (!data || i < 0 || i >= data.length || j < 0 || j >= data[0].length) return false
+	if (!data || i < 0 || j < 0 || i >= data.length || j >= data[0].length) return false
 	return data[i][j]
 }
 
+function simulate(data, complex = false) {
 
-
-
-// Part 2
-// ======
-// ~0 ms - answer: 0
-
-const part2 = input => {
-	const start = now()
-	let result = 0;
-
-	let data = input.split("\n").map(x => x.split(""));
 	let changed = true;
 	while (changed) {
 		changed = false
@@ -92,19 +60,28 @@ const part2 = input => {
 
 		for (let i = 0; i < prev.length; i++) {
 			for (let j = 0; j < prev[i].length; j++) {
-				let neigh = getFarNeigh(i, j, prev);
+				const neigh = complex ? getFarNeigh(i, j, prev)
+					: getNeigh(i, j, prev)
 				if (prev[i][j] === "L" && !neigh.find(x => x === "#")) {
 					data[i][j] = "#"
 					changed = true
-				} else if (prev[i][j] === "#" && neigh.filter(x => x === "#").length > 4) {
+				} else if (prev[i][j] === "#" && neigh.filter(x => x === "#").length > (complex ? 4 : 3)) {
 					data[i][j] = "L"
 					changed = true
 				}
 			}
 		}
 	}
+	return countHash(data)
+}
 
-	result = countHash(data)
+// Part 2
+// ======
+// ~242 ms - answer: 2199
+
+const part2 = input => {
+	const start = now()
+	let result = simulate(input.split("\n").map(x => x.split("")), true)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
