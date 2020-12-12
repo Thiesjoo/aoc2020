@@ -14,29 +14,33 @@ const dirMap = {
 
 const part1 = input => {
 	const start = now()
-	let vec = new Vector2(0, 0)
-	let dir = new Vector2(1, 0)
 
-	input.split("\n").map(x => {
-		let inst = x[0]
-		let amt = parseInt(x.slice(1))
-		if (inst === "F") {
-			let tempDir = dir.copy()
-			vec.add(dir.mult(amt))
-			dir = tempDir
-		} else if (inst === "R") {
-			dir.rotate(amt)
-		} else if (inst === "L") {
-			dir.rotate(-amt)
-		} else {
-			vec.add(dirMap[inst](amt))
-		}
-	});
+	let result = handleVec(input, new Vector2(0, 0), new Vector2(1, 0), false)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
 
-	return vec.length()
+	return result
+}
+
+function handleVec(input, vector, direction, part2 = false) {
+	input.split("\n").forEach(x => {
+		const inst = x[0]
+		const amt = parseInt(x.slice(1))
+
+		if (inst === "F") {
+			let tempWaypoint = direction.copy()
+			vector.add(direction.mult(amt))
+			direction = tempWaypoint
+		} else if (inst === "R") {
+			direction.rotate(amt)
+		} else if (inst === "L") {
+			direction.rotate(-amt)
+		} else {
+			(part2 ? direction : vector).add(dirMap[inst](amt))
+		}
+	})
+	return vector.length()
 }
 
 // Part 2
@@ -46,34 +50,15 @@ const part1 = input => {
 const part2 = input => {
 	const start = now()
 
-	let shipVec = new Vector2(0, 0)
-	let wayPointVec = new Vector2(10, 1) //Relative to ship
-
-	input.split("\n").map(x => {
-		let inst = x[0]
-		let amt = parseInt(x.slice(1))
-		if (inst === "F") {
-			let tempWaypoint = wayPointVec.copy()
-			shipVec.add(wayPointVec.mult(amt))
-			wayPointVec = tempWaypoint
-		} else if (inst === "R") {
-			wayPointVec.rotate(amt)
-		} else if (inst === "L") {
-			wayPointVec.rotate(-amt)
-		} else {
-			wayPointVec.add(dirMap[inst](amt))
-		}
-	});
+	let result = handleVec(input, new Vector2(0, 0), new Vector2(10, 1), true)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
 
-	return shipVec.length()
+	return result
 }
 
 module.exports = { part1, part2 }
-
-
 class Vector2 {
 	x;
 	y;
