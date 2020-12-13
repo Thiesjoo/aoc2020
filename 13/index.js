@@ -29,29 +29,35 @@ const part1 = input => {
 
 // Part 2
 // ======
-// ~0 ms - answer: 0
+// ~1.2 ms - answer: 725850285300475
 
+// Principle behind this code was gathered from reddit. Code implementation was done by me.
 const part2 = input => {
 	const start = now()
 	const data = input.split("\n");
-	let schedule = data[1].split(",").map(Number)
-	console.log(schedule)
+	let schedule = data[1].split(",").map((x, i) => {
+		return { x: parseInt(x), i }
+	}).filter(x => !isNaN(x.x))
 
-	const adding = schedule[0];
+	// https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
+	let invm = (a, b) => a === 0 ? 0 : (b % a == 0 ? 1 : (b - Math.floor(invm(b % a, a) * b / a)))
 
-	let found = null;
-	let index = adding * 100000000000000;
-	while (!found) {
-		index += adding
-		found = schedule.every((x, i) => {
-			return isNaN(x) || (index + i) % x === 0
-		})
-	}
+	// https://en.wikipedia.org/wiki/Chinese_remainder_theorem
+	let N = schedule.reduce((acc, val) => {
+		acc = acc * val.x
+		return acc
+	}, 1)
+
+	let x = schedule.reduce((acc, val) => {
+		let test = val.i * Math.floor(N / val.x) * invm(Math.floor(N / val.x), val.x)
+		acc += test
+		return acc
+	}, 0)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
 
-	return index
+	return (N - x % N) + 1
 }
 
 module.exports = { part1, part2 }
