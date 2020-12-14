@@ -17,7 +17,7 @@ const part1 = input => {
 			return
 		}
 
-		mem[x.address] = processBin(x.val, currMask, false)
+		mem[x.address] = processBin(x.val, currMask, "X")
 	})
 	let result = (Object.values(mem).map(x => parseInt(x, 2)).reduce((acc, val) => acc += val))
 
@@ -43,7 +43,7 @@ const part2 = input => {
 			currMask = x.val
 			return
 		}
-		processX(processBin(x.address, currMask, true)).forEach(y => {
+		processX(processBin(x.address, currMask, "0")).forEach(y => {
 			mem[parseInt(y, 2)] = x.val
 		})
 	})
@@ -61,8 +61,8 @@ function processX(bits) {
 	return [...processX(bits.replace('X', '0')), ...processX(bits.replace('X', '1'))];
 }
 
-function processBin(bin, currMask, part2 = false) {
-	return bin.toString(2).padStart(36, "0",).split("").map((z, i) => (currMask[i] === (part2 ? "0" : "X") ? z : currMask[i])).join("")
+function processBin(bin, currMask, toCheck) {
+	return bin.toString(2).padStart(36, "0",).split("").map((z, i) => (currMask[i] === toCheck ? z : currMask[i])).join("")
 }
 
 function processInput(input) {
