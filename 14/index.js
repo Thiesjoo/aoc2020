@@ -16,10 +16,10 @@ const part1 = input => {
 			currMask = x.val
 			return
 		}
-
 		mem[x.address] = processBin(x.val, currMask, "X")
 	})
-	let result = (Object.values(mem).map(x => parseInt(x, 2)).reduce((acc, val) => acc += val))
+
+	let result = getMem(mem, x => parseInt(x, 2))
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
@@ -48,7 +48,7 @@ const part2 = input => {
 		})
 	})
 
-	let result = (Object.values(mem).reduce((acc, val) => acc += val))
+	let result = getMem(mem)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
@@ -61,19 +61,23 @@ function processX(bits) {
 	return [...processX(bits.replace('X', '0')), ...processX(bits.replace('X', '1'))];
 }
 
-function processBin(bin, currMask, toCheck) {
-	return bin.toString(2).padStart(36, "0",).split("").map((z, i) => (currMask[i] === toCheck ? z : currMask[i])).join("")
+function processBin(bin, mask, toCheck) {
+	return bin.toString(2).padStart(36, "0",).split("").map((bit, i) => (mask[i] === toCheck ? bit : mask[i])).join("")
 }
 
 function processInput(input) {
-	return input.split("\n").map(x => {
-		if (x.startsWith("mask = ")) {
-			return { type: "mask", val: x.slice(7).split("") }
+	return input.split("\n").map(line => {
+		if (line.startsWith("mask = ")) {
+			return { type: "mask", val: line.slice(7).split("") }
 		} else {
-			const [, address, val] = x.match(/mem\[(\d+)\] = (\d+)/)
-			return { type: null, val: parseInt(val), address: parseInt(address) }
+			const [, address, val] = line.match(/mem\[(\d+)\] = (\d+)/)
+			return { val: parseInt(val), address: parseInt(address) }
 		}
 	});
+}
+
+function getMem(mem, mapper = x => x) {
+	return Object.values(mem).map(mapper).reduce((acc, val) => acc + val)
 }
 
 module.exports = { part1, part2 }
