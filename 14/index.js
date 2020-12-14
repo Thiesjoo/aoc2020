@@ -19,7 +19,7 @@ const part1 = input => {
 		mem[x.address] = processBin(x.val, currMask, "X")
 	})
 
-	let result = getMem(mem, x => parseInt(x, 2))
+	const result = getMem(mem, x => parseInt(x, 2))
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
@@ -34,7 +34,6 @@ const part1 = input => {
 const part2 = input => {
 	const start = now()
 	let mem = {}
-
 	const data = processInput(input)
 
 	let currMask = []
@@ -48,7 +47,7 @@ const part2 = input => {
 		})
 	})
 
-	let result = getMem(mem)
+	const result = getMem(mem)
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
@@ -57,8 +56,7 @@ const part2 = input => {
 }
 
 function processX(bits) {
-	if (bits.indexOf('X') === -1) return [bits];
-	return [...processX(bits.replace('X', '0')), ...processX(bits.replace('X', '1'))];
+	return !~bits.indexOf('X') ? [bits] : [...processX(bits.replace('X', '0')), ...processX(bits.replace('X', '1'))];
 }
 
 function processBin(bin, mask, toCheck) {

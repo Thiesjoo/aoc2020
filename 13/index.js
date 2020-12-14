@@ -19,7 +19,7 @@ const part1 = input => {
 		}
 	});
 	diff.sort((a, b) => b.time - a.time)
-	let maxDiff = diff[0];
+	const maxDiff = diff[0];
 
 	const end = now()
 	console.log('Execution time: ~%dms', (end - start).toFixed(3));
@@ -35,12 +35,12 @@ const part1 = input => {
 const part2 = input => {
 	const start = now()
 	const data = input.split("\n");
-	let schedule = data[1].split(",").map((x, i) => {
+	const schedule = data[1].split(",").map((x, i) => {
 		return { x: parseInt(x), i }
 	}).filter(x => !isNaN(x.x))
 
 	// https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
-	let invm = (a, b) => a === 0 ? 0 : (b % a == 0 ? 1 : (b - Math.floor(invm(b % a, a) * b / a)))
+	const invm = (a, b) => a === 0 ? 0 : (b % a == 0 ? 1 : (b - Math.floor(invm(b % a, a) * b / a)))
 
 	// https://en.wikipedia.org/wiki/Chinese_remainder_theorem
 	let N = schedule.reduce((acc, val) => {
@@ -48,7 +48,7 @@ const part2 = input => {
 		return acc
 	}, 1)
 
-	let x = schedule.reduce((acc, val) => {
+	const x = schedule.reduce((acc, val) => {
 		let test = val.i * Math.floor(N / val.x) * invm(Math.floor(N / val.x), val.x)
 		acc += test
 		return acc
