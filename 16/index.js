@@ -3,14 +3,13 @@ const now = require("performance-now");
 
 // Part 1
 // ======
-// ~0 ms - answer: 0
+// ~1.6 ms - answer: 26009
 
 const part1 = (input) => {
 	const start = now();
 	let result = 0;
 
 	const data = parseInput(input);
-	console.log(data);
 
 	data.tickets.forEach((ticket) => {
 		ticket.forEach((val) => {
