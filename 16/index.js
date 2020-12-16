@@ -1,348 +1,122 @@
-'use strict'
-const now = require("performance-now")
+"use strict";
+const now = require("performance-now");
 
 // Part 1
 // ======
 // ~0 ms - answer: 0
 
-const part1 = input => {
-	const start = now()
+const part1 = (input) => {
+	const start = now();
 	let result = 0;
 
-	const data = parseInput(input)
-	console.log(data)
+	const data = parseInput(input);
+	console.log(data);
 
-	data.tickets.forEach(ticket => {
-		ticket.forEach(val => {
-			let test = data.rules.some(x => {
-				return checkRangeHelper(x, val)
-			})
+	data.tickets.forEach((ticket) => {
+		ticket.forEach((val) => {
+			let test = data.rules.some((x) => {
+				return checkRangeHelper(x, val);
+			});
 			if (!test) {
-				result += val
+				result += val;
 			}
-		})
-	})
+		});
+	});
 
-	const end = now()
-	console.log('Execution time: ~%dms', (end - start).toFixed(3));
+	const end = now();
+	console.log("Execution time: ~%dms", (end - start).toFixed(3));
 
-	return result
-}
+	return result;
+};
 
 // Part 2
 // ======
-// ~0 ms - answer: 0
+// ~7 ms - answer: 589685618167
 
-const part2 = input => {
-	const start = now()
+const part2 = (input) => {
+	const start = now();
 	let result = 0;
 
-	const data = parseInput(input)
-	// console.log(data)
+	const { myTicket, rules, tickets } = parseInput(input);
 
-	let data3 = data.tickets.filter(ticket => {
-		let valid = true;
-		ticket.forEach(val => {
-			let test = data.rules.some(x => {
-				return checkRangeHelper(x, val)
-			})
-			if (!test) {
-				// result += val
-				valid = false
-			}
-		})
-		return valid
-	})
+	let validTickets = tickets
+		.filter((ticket) => {
+			return ticket.every((value) => {
+				return rules.some((y) => {
+					return checkRangeHelper(y, value);
+				});
+			});
+		});
 
-	// console.log(data3)
-	// return
-	let data2 = data3.map(ticket => {
-		return ticket.reduce((acc, val) => {
-			let test = data.rules.map((x) => {
-				return checkRangeHelper(x, val)
-			})
-			acc.push(test)
-			return acc
-		}, [])
-	})
-	console.log(data2)
-	// return
+	let eligibleFields = myTicket.map((_, i) =>
+		rules.filter((field) =>
+			validTickets.map((ticket) => ticket[i]).every((ticketField) => checkRangeHelper(field, ticketField))
+		),
+	);
 
+	const takenRules = [];
+	const amountOfRules = Object.keys(myTicket).length;
 
-	const test = (index, index2) => {
-		let col = []
-		data2.forEach(y => {
-			col.push(y[index][index2])
-		})
-		return col
+	while (takenRules.length < amountOfRules) {
+		eligibleFields
+			.filter(x => x.length === 1)
+			.forEach((innerFields) => {
+				if (!~takenRules.indexOf(innerFields[0][2])) takenRules.push(innerFields[0][2]);
+			});
+
+		eligibleFields = eligibleFields.map((fields) =>
+			fields.length !== 1 ? fields.filter((field) => !~takenRules.indexOf(field[2])) : fields,
+		);
 	}
-	// console.log(data2)
-	let map = []
-	for (let i = 0; i < data2[0].length; i++) {
-		for (let j = 0; j < data2[0][0].length; j++) {
-			if (new Set(test(i, j)).size === 1) {
-				if (!map[i]) map[i] = []
-				map[i].push(data.rules[j][2])
-			}
-		}
-	}
-	map = map.map((x, i) => {
-		return { x, i }
-	})
-	let test2 = map.findIndex(x => {
-		return x.x.length === 1
-	})
-	// console.log(test2, " = ", map[test2])
-	map.sort((a, b) => a.x.length - b.x.length)
-	console.log(map)
-	let test3 = {}
-	for (let i = 0; i < map.length; i++) {
-		const element = map[i];
-		console.log("E: ", element)
-		if (element.x.length !== 1) console.log("FECK")
-		// test3[element.i] = element.x[0]
-		map = map.map(x => {
-			x.x.splice(x.x.findIndex(y => y === element.x[0]), 1)
-			return x
+
+	result = eligibleFields
+		.map((x, i) => {
+			return ~x[0][2].indexOf('departure') ? myTicket[i] : false
 		})
-		map.sort((a, b) => a.x.length - b.x.length)
+		.filter((x) => x)
+		.reduce((acc, val) => acc * val, 1);;
 
-		// console.log(map)
-	}
-	console.log(test3)
+	const end = now();
+	console.log("Execution time: ~%dms", (end - start).toFixed(3));
 
-	// console.log(data.myTicket, map)
-
-	// console.log(map
-	// 	.map((x, i) => x === "departure" ? i : false)
-	// 	.filter(x => typeof x === "number")
-	// 	.map((x, i) => data.myTicket[x])
-	// 	.reduce((acc, val) => acc * val, 1))
-
-	const end = now()
-	console.log('Execution time: ~%dms', (end - start).toFixed(3));
-
-	return result
-}
-
+	return result;
+};
 
 function parseInput(input) {
-	let data = {}
+	let data = {};
 	input.split("\n\n").map((x, i) => {
 		switch (i) {
 			case 0:
-				data.rules = x.split("\n").map(y => {
-					let test123 = y.split(":")
-					let test = test123[1].split(" ")
-					// console.log(test,)
-					let st = test[1]
-					let nd = test[3]
-					st = st.split("-").map(Number)
-					nd = nd.split("-").map(Number)
-					return [st, nd, test123[0]]
-				})
-				break
+				data.rules = x.split("\n").map((y) => {
+					let test123 = y.split(":");
+					let test = test123[1].split(" ");
+					let st = test[1];
+					let nd = test[3];
+					st = st.split("-").map(Number);
+					nd = nd.split("-").map(Number);
+					return [st, nd, test123[0]];
+				});
+				break;
 			case 1:
-				data.myTicket = x.split("\n")[1].split(",").map(Number)
-				break
+				data.myTicket = x.split("\n")[1].split(",").map(Number);
+				break;
 			case 2:
-				data.tickets = x.split("\n").slice(1).map(y => y.split(",").map(Number))
-				break
+				data.tickets = x
+					.split("\n")
+					.slice(1)
+					.map((y) => y.split(",").map(Number));
+				break;
 		}
-	})
-	return data
+	});
+	return data;
 }
 
 function checkRangeHelper(rangeTwice, val) {
-	return checkRange(rangeTwice[0], val) || checkRange(rangeTwice[1], val)
+	return checkRange(rangeTwice[0], val) || checkRange(rangeTwice[1], val);
 }
 
 function checkRange(range, val) {
-	return range[0] <= val && val <= range[1]
+	return range[0] <= val && val <= range[1];
 }
 
-module.exports = { part1, part2 }
-
-
-
-let test = [
-	['departure time', 'class', 'duration', 'route', 'train'],
-	[
-		'departure location',
-		'departure station',
-		'departure platform',
-		'departure track',
-		'departure date',
-		'departure time',
-		'class',
-		'duration',
-		'route',
-		'train',
-		'zone'
-	],
-	[
-		'departure location',
-		'departure station',
-		'departure platform',
-		'departure track',
-		'departure date',
-		'departure time',
-		'arrival station',
-		'arrival track',
-		'class',
-		'duration',
-		'route',
-		'train',
-		'wagon',
-		'zone'
-	],
-	[
-		'departure location',
-		'departure station',
-		'departure platform',
-		'departure track',
-		'departure date',
-		'departure time',
-		'class',
-		'duration',
-		'route',
-		'train'
-	],
-	[
-		'departure location',
-		'departure station',
-		'departure platform',
-		'departure time',
-		'class',
-		'duration',
-		'route',
-		'train'
-	],
-	[
-		'departure location',
-		'departure station',
-		'departure time',
-		'class',
-		'duration',
-		'route',
-		'train'
-	],
-	[
-		'departure location',
-		'departure station',
-		'departure platform',
-		'departure track',
-		'departure date',
-		'departure time',
-		'arrival station',
-		'class',
-		'duration',
-		'route',
-		'train',
-		'wagon',
-		'zone'
-	],
-	['class', 'duration', 'route'],
-	[
-		'departure location',
-		'departure station',
-		'departure platform',
-		'departure track',
-		'departure date',
-		'departure time',
-		'arrival station',
-		'class',
-		'duration',
-		'route',
-		'train',
-		'zone'
-	],
-	['route'],
-	[
-		'departure location',
-		'departure time',
-		'class',
-		'duration',
-		'route',
-		'train'
-	],
-	['duration', 'route'],
-	[
-		'departure location',
-		'departure station',
-		'departure platform',
-		'departure track',
-		'departure time',
-		'class',
-		'duration',
-		'route',
-		'train'
-	],
-	[
-		'departure location', 'departure station',
-		'departure platform', 'departure track',
-		'departure date', 'departure time',
-		'arrival location', 'arrival station',
-		'arrival platform', 'arrival track',
-		'class', 'duration',
-		'price', 'route',
-		'row', 'seat',
-		'train', 'type',
-		'wagon', 'zone'
-	],
-	[
-		'departure location', 'departure station',
-		'departure platform', 'departure track',
-		'departure date', 'departure time',
-		'arrival location', 'arrival station',
-		'arrival platform', 'arrival track',
-		'class', 'duration',
-		'route', 'train',
-		'wagon', 'zone'
-	],
-	[
-		'departure location', 'departure station',
-		'departure platform', 'departure track',
-		'departure date', 'departure time',
-		'arrival location', 'arrival station',
-		'arrival platform', 'arrival track',
-		'class', 'duration',
-		'price', 'route',
-		'row', 'train',
-		'wagon', 'zone'
-	],
-	[
-		'departure location', 'departure station',
-		'departure platform', 'departure track',
-		'departure date', 'departure time',
-		'arrival location', 'arrival station',
-		'arrival platform', 'arrival track',
-		'class', 'duration',
-		'price', 'route',
-		'train', 'wagon',
-		'zone'
-	],
-	[
-		'departure location', 'departure station',
-		'departure platform', 'departure track',
-		'departure date', 'departure time',
-		'arrival location', 'arrival station',
-		'arrival platform', 'arrival track',
-		'class', 'duration',
-		'price', 'route',
-		'row', 'seat',
-		'train', 'wagon',
-		'zone'
-	],
-	[
-		'departure location', 'departure station',
-		'departure platform', 'departure track',
-		'departure date', 'departure time',
-		'arrival station', 'arrival platform',
-		'arrival track', 'class',
-		'duration', 'route',
-		'train', 'wagon',
-		'zone'
-	],
-	['class', 'duration', 'route', 'train']
-]
+module.exports = { part1, part2 };
