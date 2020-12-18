@@ -23,6 +23,7 @@
 	},
 	"dependencies": {
 		"advent-of-code": "^5.0.0",
+		"parenthesis": "^3.1.7",
 		"performance-now": "^2.1.0"
 	}
 }
