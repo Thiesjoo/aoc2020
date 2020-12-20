@@ -3,7 +3,7 @@ const now = require("performance-now");
 
 // Part 1
 // ======
-// ~0 ms - answer: 0
+// ~0 ms - answer: 68781323018729
 
 const part1 = (input) => {
   const start = now();
@@ -42,30 +42,24 @@ const part1 = (input) => {
     const index = remainingTiles.findIndex((x) => x.id === curr.id);
     if (index > -1) {
       remainingTiles.splice(index, 1);
-    } else {
-      // console.log(
-      //   "Oopsie",
-      //   curr.id,
-      //   remainingTiles.find((x) => x.id === curr.id)
-      // );
     }
 
-    let borders = curr.getBorders();
+    let currentBorders = curr.getBorders();
 
     remainingTiles.forEach((tile) => {
       let tempBorders = tile.getBorders();
       tempBorders.forEach((border, iOther) => {
         //Find a matched border
-        let iCurrent = borders.findIndex((y) => arrMatch(y, border));
+        let iCurrent = currentBorders.findIndex((y) => arrMatch(y, border));
 
-        let rev = border.reverse();
-        let iReversedCurrent = borders.findIndex((z) => arrMatch(z, rev));
+        let rev = [...border].reverse();
+        let iReversedCurrent = currentBorders.findIndex((z) =>
+          arrMatch(z, rev)
+        );
 
         if (iCurrent > -1) {
           let rot = (iCurrent + 4 - opposite(iOther)) % 4;
-          // tile.print();
-          // curr.print();
-          // console.log(iCurrent, rot, borders, border);
+          console.log(iCurrent, iOther, opposite(iOther), rot);
 
           if (curr.getNeigh(iCurrent) === null) {
             allTiles[tile.id].rotate(rot);
@@ -77,7 +71,7 @@ const part1 = (input) => {
             }
             curr.setNeigh(iCurrent, tile.id);
             tile.setNeigh(opposite(iCurrent), curr.id);
-            stack.unshift(tile);
+            stack.push(tile);
           } else {
             console.log("Con already set");
           }
@@ -85,10 +79,21 @@ const part1 = (input) => {
           let rot = (iReversedCurrent + 4 - opposite(iOther)) % 4;
           if (curr.getNeigh(iReversedCurrent) === null) {
             allTiles[tile.id].rotate(rot);
-
+            // if (opposite(iReversedCurrent) !== iOther) {
+            //   console.log("Something is wrong?");
+            //   curr.print();
+            //   tile.print();
+            //   console.log(
+            //     "rev: ",
+            //     iReversedCurrent,
+            //     opposite(iReversedCurrent),
+            //     iOther,
+            //     opposite(iOther)
+            //   );
+            // }
             curr.setNeigh(iReversedCurrent, tile.id);
             tile.setNeigh(opposite(iReversedCurrent), curr.id);
-            stack.unshift(tile);
+            stack.push(tile);
           } else {
             console.log("Con already set");
           }
@@ -97,13 +102,32 @@ const part1 = (input) => {
     });
   }
 
-  // console.log(allTiles);
-  // const image = new Array(Math.round(Math.sqrt(data.length)))
-  const left = Object.values(allTiles).find(
+  // const len = Math.round(Math.sqrt(data.length));
+  // let image = [];
+  // const tiles = Object.values(allTiles);
+
+  // let left = tiles.find(
+  //   (x) =>
+  //     x.left === null && x.top === null && x.right !== null && x.bottom !== null
+  // );
+
+  // for (let i = 0; i < len; i++) {
+  //   let right = left;
+  //   image[i] = [];
+  //   for (let j = 0; j < len; j++) {
+  //     image[i][j] = right;
+  //     // console.log(left, right, j, i);
+  //     right = allTiles[right.right];
+  //   }
+  //   left = allTiles[left.bottom];
+  //   console.log(left);
+  // }
+
+  const left1 = Object.values(allTiles).find(
     (x) =>
       x.left === null && x.top === null && x.right !== null && x.bottom !== null
   );
-  const right = Object.values(allTiles).find(
+  const right1 = Object.values(allTiles).find(
     (x) =>
       x.right === null && x.top === null && x.left !== null && x.bottom !== null
   );
@@ -115,12 +139,12 @@ const part1 = (input) => {
     (x) =>
       x.left === null && x.bottom === null && x.right !== null && x.top !== null
   );
-  console.log(left?.id, right?.id, left2?.id, right2?.id);
+  console.log(left1?.id, right1?.id, left2?.id, right2?.id);
 
   const end = now();
   console.log("Execution time: ~%dms", (end - start).toFixed(3));
 
-  return left?.id * right?.id * left2?.id * right2?.id;
+  return left1?.id * right1?.id * left2?.id * right2?.id;
 };
 
 function opposite(i) {
@@ -148,7 +172,7 @@ function rotate(matrix) {
 
 // function rotate(matrix) {
 //   return matrix[0].map((val, index) =>
-//     matrix.map((row) => row[index]).reverse()
+//     [...matrix.map((row) => row[index])].reverse()
 //   );
 // }
 
@@ -196,11 +220,11 @@ class Tile {
   }
 
   flipHorizontal() {
-    this.grid = this.grid.map((x) => x.reverse());
+    this.grid = this.grid.map((x) => [...x].reverse());
   }
 
   flipVertical() {
-    this.grid = this.grid.reverse();
+    this.grid.reverse();
   }
 
   rotate(times) {
