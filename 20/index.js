@@ -285,10 +285,7 @@ function imageToTile(image) {
   );
 }
 
-const monster = `                  # 
-#    ##    ##    ###
- #  #  #  #  #  #   `;
-const monsterRegex = monster.split("\n").map((x) => new RegExp(x));
+
 
 function isSeaMonster(image, x, y) {
   let grd = image.grid;
@@ -311,24 +308,25 @@ function isSeaMonster(image, x, y) {
     : false;
 }
 
+const monster = `                  # 
+#    ##    ##    ###
+ #  #  #  #  #  #   `;
+const regex = monster.split("\n").map((x) => new RegExp(`(?=(${x.replace(/\s/g, ".")}))`, "g"));
+
 function countSeaMonsters(image) {
   let count = 0;
-  for (let y = 0; y < image.grid.length - 1; y++) {
-    // for (let x = 0; x < image.grid.length - 19; x++) {
-    //   if (isSeaMonster(image, x, y)) count++;
-    // }
-    const y1 = image.grid[y].map((y) => (y ? "#" : ".")).join("");
-    const y2 = image.grid[y + 1].map((y) => (y ? "#" : ".")).join("");
-    const y3 = image.grid[y + 2].map((y) => (y ? "#" : ".")).join("");
-    console.log(y1, y2, y3);
+  const imageGridOriginal = image.toString();
+  for (let y = 0; y < imageGridOriginal.length - 2; y++) {
+    const x = (xa, xb) => xa.filter((xc) => new Set(xb).has(xc));
+    const yx = (i) => [...imageGridOriginal[y + i].matchAll(regex[i])].map((x) => x.index);
+    count += x(x(yx(0), yx(1)), yx(2)).length;
   }
-  // console.log(count);
+  console.log(count);
   return count;
 }
 
 function calcWaterRoughness(image) {
   const monsters = findAllSeaMonsters(image);
-  console.log("monsters: ", monsters);
   if (monsters !== 0) {
     let count = 0; //All the #
     image.grid.forEach((x) => {
