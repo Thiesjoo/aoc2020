@@ -3,12 +3,26 @@ const now = require("performance-now");
 
 // Part 1
 // ======
-// ~0 ms - answer: 68781323018729
+// ~35 ms - answer: 68781323018729
+
+//Code inspiration from: https://github.com/VictiniX888/AdventOfCode-Kotlin/blob/master/src/aoc2020/day20/Tile.kt
 
 const part1 = (input) => {
   const start = now();
-  let result = 0;
+  const image = constructImage(input);
 
+  const end = now();
+  console.log("Execution time: ~%dms", (end - start).toFixed(3));
+
+  return (
+    image[0][0].id *
+    image[0][image[0].length - 1].id *
+    image[image.length - 1][0].id *
+    image[image.length - 1][image[0].length - 1].id
+  );
+};
+
+function constructImage(input) {
   const data = input.split("\n\n").reduce((acc, x) => {
     let temp = x.split("\n");
     const [, name] = temp[0].match(/Tile (\d+):/);
@@ -43,13 +57,11 @@ const part1 = (input) => {
     if (index > -1) {
       remainingTiles.splice(index, 1);
     }
-
     let currentBorders = curr.getBorders();
 
     remainingTiles.forEach((tile) => {
       let tempBorders = tile.getBorders();
       tempBorders.forEach((border, iOther) => {
-        //Find a matched border
         let iCurrent = currentBorders.findIndex((y) => arrMatch(y, border));
 
         let rev = [...border].reverse();
@@ -59,8 +71,6 @@ const part1 = (input) => {
 
         if (iCurrent > -1) {
           let rot = (iCurrent + 4 - opposite(iOther)) % 4;
-          console.log(iCurrent, iOther, opposite(iOther), rot);
-
           if (curr.getNeigh(iCurrent) === null) {
             allTiles[tile.id].rotate(rot);
 
@@ -72,80 +82,45 @@ const part1 = (input) => {
             curr.setNeigh(iCurrent, tile.id);
             tile.setNeigh(opposite(iCurrent), curr.id);
             stack.push(tile);
-          } else {
-            console.log("Con already set");
           }
         } else if (iReversedCurrent > -1) {
           let rot = (iReversedCurrent + 4 - opposite(iOther)) % 4;
           if (curr.getNeigh(iReversedCurrent) === null) {
             allTiles[tile.id].rotate(rot);
-            // if (opposite(iReversedCurrent) !== iOther) {
-            //   console.log("Something is wrong?");
-            //   curr.print();
-            //   tile.print();
-            //   console.log(
-            //     "rev: ",
-            //     iReversedCurrent,
-            //     opposite(iReversedCurrent),
-            //     iOther,
-            //     opposite(iOther)
-            //   );
-            // }
+
             curr.setNeigh(iReversedCurrent, tile.id);
             tile.setNeigh(opposite(iReversedCurrent), curr.id);
             stack.push(tile);
-          } else {
-            console.log("Con already set");
           }
         }
       });
     });
   }
 
-  // const len = Math.round(Math.sqrt(data.length));
-  // let image = [];
-  // const tiles = Object.values(allTiles);
+  // Object.values(allTiles).forEach((x) => {
+  //   console.log(x.id, x.top, x.right, x.bottom, x.left);
+  // });
 
-  // let left = tiles.find(
-  //   (x) =>
-  //     x.left === null && x.top === null && x.right !== null && x.bottom !== null
-  // );
+  const len = Math.round(Math.sqrt(data.length));
+  let image = [];
+  const tiles = Object.values(allTiles);
 
-  // for (let i = 0; i < len; i++) {
-  //   let right = left;
-  //   image[i] = [];
-  //   for (let j = 0; j < len; j++) {
-  //     image[i][j] = right;
-  //     // console.log(left, right, j, i);
-  //     right = allTiles[right.right];
-  //   }
-  //   left = allTiles[left.bottom];
-  //   console.log(left);
-  // }
-
-  const left1 = Object.values(allTiles).find(
+  let left = tiles.find(
     (x) =>
       x.left === null && x.top === null && x.right !== null && x.bottom !== null
   );
-  const right1 = Object.values(allTiles).find(
-    (x) =>
-      x.right === null && x.top === null && x.left !== null && x.bottom !== null
-  );
-  const right2 = Object.values(allTiles).find(
-    (x) =>
-      x.right === null && x.bottom === null && x.left !== null && x.top !== null
-  );
-  const left2 = Object.values(allTiles).find(
-    (x) =>
-      x.left === null && x.bottom === null && x.right !== null && x.top !== null
-  );
-  console.log(left1?.id, right1?.id, left2?.id, right2?.id);
 
-  const end = now();
-  console.log("Execution time: ~%dms", (end - start).toFixed(3));
-
-  return left1?.id * right1?.id * left2?.id * right2?.id;
-};
+  for (let i = 0; i < len; i++) {
+    let right = left;
+    image[i] = [];
+    for (let j = 0; j < len; j++) {
+      image[i][j] = right;
+      right = allTiles[right.right];
+    }
+    left = allTiles[left.bottom];
+  }
+  return image;
+}
 
 function opposite(i) {
   switch (i) {
@@ -205,7 +180,8 @@ class Tile {
         }, [])
     );
     //bot
-    borders.push(this.grid[this.grid.length - 1]);
+    let test = [...this.grid[this.grid.length - 1]].reverse();
+    borders.push(test);
     //left
     borders.push(
       this.grid
@@ -214,6 +190,7 @@ class Tile {
           acc.push(val);
           return acc;
         }, [])
+        .reverse()
     );
 
     return borders;
