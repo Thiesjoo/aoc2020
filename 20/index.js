@@ -30,10 +30,6 @@ function constructImage(input) {
     acc.push(
       new Tile(
         name,
-        null,
-        null,
-        null,
-        null,
         map.map((y) => {
           return y.split("").map((z) => z === "#");
         })
@@ -136,28 +132,20 @@ function opposite(i) {
 }
 
 function rotate(matrix) {
-  // function statement
-  const N = matrix.length - 1; // use a constant
-  // use arrow functions and nested map;
+  const N = matrix.length - 1;
   const result = matrix.map((row, i) => row.map((val, j) => matrix[N - j][i]));
-  matrix.length = 0; // hold original array reference
-  matrix.push(...result); // Spread operator
+  matrix.length = 0;
+  matrix.push(...result);
   return matrix;
 }
 
-// function rotate(matrix) {
-//   return matrix[0].map((val, index) =>
-//     [...matrix.map((row) => row[index])].reverse()
-//   );
-// }
-
 class Tile {
-  constructor(_id, _top, _right, _bot, _left, _grid) {
+  constructor(_id, _grid) {
     this.id = _id;
-    this.top = _top;
-    this.left = _left;
-    this.right = _right;
-    this.bottom = _bot;
+    this.top = null;
+    this.left = null;
+    this.right = null;
+    this.bottom = null;
 
     this.grid = _grid;
   }
@@ -240,10 +228,26 @@ class Tile {
     }
   }
 
+  removeBorder() {
+    let temp = this.grid.slice(1);
+    temp.pop();
+    this.grid = temp.map((x) => {
+      let temp2 = x.slice(1);
+      temp2.pop();
+      return temp2;
+    });
+  }
+
   print() {
     console.log("Tile ", this.id);
     this.grid.forEach((x) => {
       console.log(x.map((y) => (y ? "#" : ".")).join(""));
+    });
+  }
+
+  toString() {
+    return this.grid.map((x) => {
+      return x.map((y) => (y ? "#" : ".")).join("");
     });
   }
 }
@@ -257,6 +261,112 @@ function arrMatch(arr1, arr2) {
   return true;
 }
 
+function imageToTile(image) {
+  return new Tile(
+    0,
+    image
+      .map((row) => {
+        let newArr = [];
+        let mapped = row.map((tile) => {
+          tile.removeBorder();
+          return tile.grid;
+        });
+        mapped.forEach((x) => {
+          x.forEach((y, i) => {
+            if (!newArr[i]) newArr[i] = [];
+            newArr[i] = newArr[i].concat(y);
+          });
+        });
+        return newArr;
+      })
+      .reduce((acc, val) => {
+        return acc.concat(val);
+      }, [])
+  );
+}
+
+const monster = `                  # 
+#    ##    ##    ###
+ #  #  #  #  #  #   `;
+const monsterRegex = monster.split("\n").map((x) => new RegExp(x));
+
+function isSeaMonster(image, x, y) {
+  let grd = image.grid;
+
+  return grd[x][y]
+    ? grd[x + 18][y - 1] &&
+        grd[x + 5][y] &&
+        grd[x + 6][y] &&
+        grd[x + 11][y] &&
+        grd[x + 12][y] &&
+        grd[x + 17][y] &&
+        grd[x + 18][y] &&
+        grd[x + 19][y] &&
+        grd[x + 1][y + 1] &&
+        grd[x + 4][y + 1] &&
+        grd[x + 7][y + 1] &&
+        grd[x + 10][y + 1] &&
+        grd[x + 13][y + 1] &&
+        grd[x + 16][y + 1]
+    : false;
+}
+
+function countSeaMonsters(image) {
+  let count = 0;
+  for (let y = 0; y < image.grid.length - 1; y++) {
+    // for (let x = 0; x < image.grid.length - 19; x++) {
+    //   if (isSeaMonster(image, x, y)) count++;
+    // }
+    const y1 = image.grid[y].map((y) => (y ? "#" : ".")).join("");
+    const y2 = image.grid[y + 1].map((y) => (y ? "#" : ".")).join("");
+    const y3 = image.grid[y + 2].map((y) => (y ? "#" : ".")).join("");
+    console.log(y1, y2, y3);
+  }
+  // console.log(count);
+  return count;
+}
+
+function calcWaterRoughness(image) {
+  const monsters = findAllSeaMonsters(image);
+  console.log("monsters: ", monsters);
+  if (monsters !== 0) {
+    let count = 0; //All the #
+    image.grid.forEach((x) => {
+      x.forEach((y) => {
+        if (y) count++;
+      });
+    });
+    return count - monsters * 15;
+  } else {
+    return -1;
+  }
+}
+
+function findAllSeaMonsters(image) {
+  let res = 0;
+  for (let i = 0; i < 4; i++) {
+    res = countSeaMonsters(image);
+    if (res !== 0) return res;
+
+    image.flipVertical();
+    res = countSeaMonsters(image);
+    if (res !== 0) return res;
+
+    image.flipHorizontal();
+    res = countSeaMonsters(image);
+    if (res !== 0) return res;
+
+    image.flipVertical();
+    res = countSeaMonsters(image);
+    if (res !== 0) return res;
+
+    image.flipHorizontal();
+    image.rotate();
+  }
+
+  return 0;
+}
+
 // Part 2
 // ======
 // ~0 ms - answer: 0
@@ -265,7 +375,12 @@ const part2 = (input) => {
   const start = now();
   let result = 0;
 
-  const data = input.split("\n");
+  const image = imageToTile(constructImage(input));
+  image.flipVertical();
+  image.print();
+  console.log(calcWaterRoughness(image));
+
+  // console.log(image.toString());
 
   const end = now();
   console.log("Execution time: ~%dms", (end - start).toFixed(3));
