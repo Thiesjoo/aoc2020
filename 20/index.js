@@ -285,48 +285,28 @@ function imageToTile(image) {
   );
 }
 
-
-
-function isSeaMonster(image, x, y) {
-  let grd = image.grid;
-
-  return grd[x][y]
-    ? grd[x + 18][y - 1] &&
-        grd[x + 5][y] &&
-        grd[x + 6][y] &&
-        grd[x + 11][y] &&
-        grd[x + 12][y] &&
-        grd[x + 17][y] &&
-        grd[x + 18][y] &&
-        grd[x + 19][y] &&
-        grd[x + 1][y + 1] &&
-        grd[x + 4][y + 1] &&
-        grd[x + 7][y + 1] &&
-        grd[x + 10][y + 1] &&
-        grd[x + 13][y + 1] &&
-        grd[x + 16][y + 1]
-    : false;
-}
-
 const monster = `                  # 
 #    ##    ##    ###
  #  #  #  #  #  #   `;
-const regex = monster.split("\n").map((x) => new RegExp(`(?=(${x.replace(/\s/g, ".")}))`, "g"));
+const regex = monster
+  .split("\n")
+  .map((x) => new RegExp(`(?=(${x.replace(/\s/g, ".")}))`, "g"));
 
 function countSeaMonsters(image) {
   let count = 0;
   const imageGridOriginal = image.toString();
   for (let y = 0; y < imageGridOriginal.length - 2; y++) {
     const x = (xa, xb) => xa.filter((xc) => new Set(xb).has(xc));
-    const yx = (i) => [...imageGridOriginal[y + i].matchAll(regex[i])].map((x) => x.index);
+    const yx = (i) =>
+      [...imageGridOriginal[y + i].matchAll(regex[i])].map((x) => x.index);
     count += x(x(yx(0), yx(1)), yx(2)).length;
   }
-  console.log(count);
   return count;
 }
 
 function calcWaterRoughness(image) {
   const monsters = findAllSeaMonsters(image);
+  console.log(monsters);
   if (monsters !== 0) {
     let count = 0; //All the #
     image.grid.forEach((x) => {
@@ -367,18 +347,13 @@ function findAllSeaMonsters(image) {
 
 // Part 2
 // ======
-// ~0 ms - answer: 0
+// ~45 ms - answer: 1629
 
 const part2 = (input) => {
   const start = now();
-  let result = 0;
-
   const image = imageToTile(constructImage(input));
-  image.flipVertical();
   image.print();
-  console.log(calcWaterRoughness(image));
-
-  // console.log(image.toString());
+  let result = calcWaterRoughness(image);
 
   const end = now();
   console.log("Execution time: ~%dms", (end - start).toFixed(3));
